@@ -62,6 +62,13 @@ def count_wikipedia_rawdata(q):
             print("-----------can't get rawdata from queue, exit")
             break
 
+    # sum words count 75175309
+    print("----------start testing probability")
+    # 3.9884478889479566e-54
+    print(one_gram_prob("今天晚上请你吃大餐，我们一起吃日料"))
+    # 3.7073787613579593e-28
+    print(one_gram_prob("这是一个关于维基百科的语言模型测试"))
+
 
 def to_chunks(pat):
     ret = []
@@ -146,15 +153,12 @@ def start(path):
     count_process.join()
 
     # read finished, write to file
-    global words_count
-    print("----------All process finished, write words_count to file")
-    with open('wikipedia_count.txt', 'w') as fs:
-        for k, v in words_count.items():
-            fs.write(f'{k} {v}\n')
+    # global words_count
+    # print("----------All process finished, write words_count to file")
+    # with open('wikipedia_count.txt', 'w') as fs:
+    #     for k, v in words_count.items():
+    #         fs.write(f'{k} {v}\n')
 
 
 start(database_path)
 
-print("----------start testing probability")
-print(one_gram_prob("今天晚上请你吃大餐，我们一起吃日料"))
-print(one_gram_prob("这是一个关于维基百科的语言模型测试"))
