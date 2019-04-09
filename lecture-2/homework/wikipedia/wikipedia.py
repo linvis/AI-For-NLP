@@ -6,20 +6,16 @@ import re
 import time
 from collections import Counter
 import queue
+from numba import jit
 
 
 database = '/../text/'
 database_path = os.getcwd() + database
 MAX_PROCESS = 4
 
-print(database_path)
-
 
 def get_wikipedia_dir(path):
     return [dir for dir in os.listdir(path) if dir != '.DS_Store']
-
-
-print(get_wikipedia_dir(database_path))
 
 
 def read_wikipedia_rawdata(id, q, dir):
@@ -33,7 +29,10 @@ def read_wikipedia_rawdata(id, q, dir):
             with open(database_path + d + '/' + f, 'r') as fs:
                 print("process {} read file {}/{}".format(id, d, f))
                 rawdata = fs.read()
+                t1 = time.time()
                 words = handle_rawdata(rawdata)
+                t2 = time.time()
+                print("process {} consume time {}".format(id, (t2 - t1)))
 
                 while(q.full()):
                    time.sleep(0.5)
@@ -50,12 +49,15 @@ def count_wikipedia_rawdata(q):
     while(True):
         # blocking with 30 until get q message
         try:
+            t1 = time.time()
             rawdata = q.get(True, 10)
 
             sum_words_count = sum_words_count + len(rawdata)
             cur_count = Counter(rawdata)
             # words_count = words_count + cur_count
             words_count.update(cur_count)
+            t2 = time.time()
+            print("consume time {}".format(t2 - t1))
             print("sum words count %ld" % sum_words_count)
             print(words_count.most_common(10))
         except queue.Empty:
@@ -122,6 +124,7 @@ def start(path):
     dir = get_wikipedia_dir(path)
     print(dir)
 
+
     process_num = MAX_PROCESS
     if len(dir) < process_num:
         process_num = len(dir)
@@ -160,5 +163,37 @@ def start(path):
     #         fs.write(f'{k} {v}\n')
 
 
+def single_process_start(path):
+    global words_count
+    global sum_words_count
+    dir = get_wikipedia_dir(path)
+    print(dir)
+
+    # jieba.enable_parallel()
+
+    for d in dir:
+        for f in os.listdir(database_path + d):
+            if '.DS_Store' in f:
+                continue
+            with open(database_path + d + '/' + f, 'r') as fs:
+                data = fs.read()
+                rawdata = handle_rawdata(data)
+
+                sum_words_count = sum_words_count + len(rawdata)
+                cur_count = Counter(rawdata)
+                # words_count = words_count + cur_count
+                words_count.update(cur_count)
+                print("sum words count %ld" % sum_words_count)
+                print(words_count.most_common(10))
+
+    print("----------start testing probability")
+    # 3.9884478889479566e-54
+    print(one_gram_prob("今天晚上请你吃大餐，我们一起吃日料"))
+    # 3.7073787613579593e-28
+    print(one_gram_prob("这是一个关于维基百科的语言模型测试"))
+
+
 start(database_path)
+
+#single_process_start(database_path)
 
