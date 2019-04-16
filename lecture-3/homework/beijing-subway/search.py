@@ -67,9 +67,8 @@ def format_station(all_lines):
                 name = node.group(1)
                 put_station_in_list(all_stations, name, line, node.group(2), dis)
 
-                if conn_node == nodes[-1]:
-                    name = node.group(2)
-                    put_station_in_list(all_stations, name, line, node.group(1), dis)
+                name = node.group(2)
+                put_station_in_list(all_stations, name, line, node.group(1), dis)
 
             # print(conn_node[0])
             # print(conn_node[1])
@@ -92,7 +91,9 @@ def show_graph(all_stations):
 
 
 all_lines = init_stations(base_url)
-print(all_lines)
+for line, sta in all_lines.items():
+    print(line)
+    print(sta)
 ALL_STATIONS = format_station(all_lines)
 # for sta in ALL_STATIONS:
 #     print(sta.conn)
@@ -104,33 +105,34 @@ graph = show_graph(ALL_STATIONS)
 
 def my_navigation(start, end, graph):
     pathes = [[start], ]
-    used_nodes = []
+    seen = []
 
     # at first, I put `path = []` here, it is wrong, path should be refresh in every loop
 
-    while (pathes):
-        # print(pathes)
-        path = pathes.pop()  # here should be pop(0), because sorted() had put smallest one in the head
+    while pathes:
+        path = pathes.pop(0)
+        print("current path: {}".format(path))
 
         node = path[-1]
-        # print("-------location %s" % node)
 
-        if node in used_nodes: continue
+        if node in seen: continue
+
+        print("-------location %s" % node)
 
         next_nodes = graph[node]
 
-        for s in next_nodes:
-            # print("looking for %s" % s)
-            if s == end:
-                path.append(s)
+        for n in next_nodes:
+            print("looking for %s" % n)
+            if n == end:
+                path.append(n)
                 return path
-            pathes.append(path + [s])
+            pathes.append(path + [n])
 
         pathes = sorted(pathes, key=len)
-
-        used_nodes.append(node)
+        seen.append(node)
 
 
 
 # print(get_station_by_name('俸伯', ALL_STATIONS).name)
+print(graph['霍营'])
 print(my_navigation('霍营', '西直门', graph))
