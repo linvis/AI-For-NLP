@@ -117,22 +117,24 @@ def my_navigation(start, end, graph):
 
         if node in seen: continue
 
-        print("-------location %s" % node)
+        print("looking for {}".format(node))
 
         next_nodes = graph[node]
 
         for n in next_nodes:
-            print("looking for %s" % n)
             if n == end:
                 path.append(n)
                 return path
             pathes.append(path + [n])
 
         pathes = sorted(pathes, key=len)
+
         seen.append(node)
+
+
 
 
 
 # print(get_station_by_name('俸伯', ALL_STATIONS).name)
 print(graph['霍营'])
-print(my_navigation('霍营', '西直门', graph))
+print(my_navigation('霍营', '亮马桥', graph))
