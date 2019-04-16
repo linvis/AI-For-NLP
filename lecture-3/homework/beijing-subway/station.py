@@ -1,0 +1,18 @@
+
+
+class Station:
+    def __init__(self):
+        self.line = ''
+        self.name = ''
+        self.conn = []
+        self.dis = {}
+
+    def set_line(self, line):
+        self.line = line
+
+    def set_name(self, name):
+        self.name = name
+
+    def add_conn(self, name, dis):
+        self.conn.append(name)
+        self.dis[name] = dis
