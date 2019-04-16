@@ -16,3 +16,6 @@ class Station:
     def add_conn(self, name, dis):
         self.conn.append(name)
         self.dis[name] = dis
+
+    def get_conn_dis(self, conn_name):
+        return self.dis[conn_name]

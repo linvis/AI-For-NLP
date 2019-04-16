@@ -111,19 +111,20 @@ def my_navigation(start, end, graph):
 
     while pathes:
         path = pathes.pop(0)
-        print("current path: {}".format(path))
+        # print("current path: {}".format(path))
 
         node = path[-1]
 
         if node in seen: continue
 
-        print("looking for {}".format(node))
+        # print("looking for {}".format(node))
 
         next_nodes = graph[node]
 
         for n in next_nodes:
             if n == end:
                 path.append(n)
+                print("sum distance {}".format(get_distance(path)))
                 return path
             pathes.append(path + [n])
 
@@ -132,9 +133,50 @@ def my_navigation(start, end, graph):
         seen.append(node)
 
 
+def get_distance(path):
+
+    sum_dis = 0.0
+    for i in range(len(path) - 1):
+        station= get_station_by_name(path[i], ALL_STATIONS)
+        sum_dis += station.get_conn_dis(path[i + 1])
+
+    return sum_dis
+
+
+def navigation(start, end, graph):
+    pathes = [[start], ]
+    seen = []
+
+    # at first, I put `path = []` here, it is wrong, path should be refresh in every loop
+
+    while pathes:
+        path = pathes.pop(0)
+        # print("current path: {}".format(path))
+
+        node = path[-1]
+
+        if node in seen: continue
+
+        # print("looking for {}".format(node))
+
+        next_nodes = graph[node]
+
+        for n in next_nodes:
+            if n == end:
+                path.append(n)
+                print("sum distance {}".format(get_distance(path)))
+                return path
+            pathes.append(path + [n])
+
+        pathes = sorted(pathes, key=get_distance)
+
+        seen.append(node)
 
 
 
 # print(get_station_by_name('俸伯', ALL_STATIONS).name)
+print("fuccccccccc")
 print(graph['霍营'])
 print(my_navigation('霍营', '亮马桥', graph))
+
+print(navigation('霍营', '亮马桥', graph))
