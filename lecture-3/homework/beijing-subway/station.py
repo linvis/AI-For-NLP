@@ -2,13 +2,14 @@
 
 class Station:
     def __init__(self):
-        self.line = ''
+        self.line = []
         self.name = ''
         self.conn = []
         self.dis = {}
 
-    def set_line(self, line):
-        self.line = line
+    def add_line(self, line):
+        if line not in self.line:
+            self.line.append(line)
 
     def set_name(self, name):
         self.name = name

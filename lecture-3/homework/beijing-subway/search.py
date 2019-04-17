@@ -40,7 +40,7 @@ def put_station_in_list(all_stations, *args):
 
     if get_station_by_name(name, all_stations) == None:
         station = Station()
-        station.set_line(line)
+        station.add_line(line)
         station.set_name(name)
 
         dis = dis_unit_trans(float(dis.group()))
@@ -49,6 +49,7 @@ def put_station_in_list(all_stations, *args):
         all_stations.append(station)
     else:
         station = get_station_by_name(name, all_stations)
+        station.add_line(line)
 
         dis = dis_unit_trans(float(dis.group()))
 
@@ -107,25 +108,20 @@ def less_distance(path):
 
 
 def less_lines(path):
-    sum_line = [ ]
+    latest_line = []
+    latest_station = None
 
     for i in range(len(path)):
         station = get_station_by_name(path[i], ALL_STATIONS)
-        if station.line not in sum_line:
-            sum_line.append(station.line)
+        if latest_station == None:
+            latest_station = station
+        else:
+            line = list(set(station.line) & set(latest_station.line))[0]
+            if line not in latest_line:
+                latest_line.append(line)
+            latest_station = station
 
-    return len(sum_line)
-
-
-def less_lines_and_stations(path):
-    sum_line = [ ]
-
-    for i in range(len(path)):
-        station = get_station_by_name(path[i], ALL_STATIONS)
-        if station.line not in sum_line:
-            sum_line.append(station.line)
-
-    return len(sum_line) + len(path)
+    return len(latest_line), latest_line
 
 
 def navigation(start, end, graph, *strategy):
@@ -173,32 +169,22 @@ all_lines = init_stations(office_url, 'office')
 #     print(sta)
 ALL_STATIONS = format_station(all_lines)
 # for sta in ALL_STATIONS:
-#     print(sta.conn)
-#     print(sta.name)
-#     print(sta.line)
+#     print("name is {}".format(sta.name))
+#     print("conn is {}".format(sta.conn))
+#     print("line is {}".format(sta.line))
 
 graph = show_graph(ALL_STATIONS, False)
 
 # less stations transfer
+print("----------less stations transfer-----------")
 print(navigation('霍营', '亮马桥', graph, len))
 # less distances
+print("----------less distances-----------")
 print(navigation('霍营', '亮马桥', graph, less_distance))
 # less lines transfer
+print("----------less lines transfer-----------")
 print(navigation('霍营', '亮马桥', graph, less_lines))
 # less lines transfer and less distance
 # so this is the best one
+print("----------less lines transfer and less distance-----------")
 print(navigation('霍营', '亮马桥', graph, less_lines, less_distance))
-
-# running log
-# sum distance 20.197000000000003
-# sum lines 4
-# ['霍营', '立水桥', '北苑', '望京西', '芍药居', '太阳宫', '三元桥', '亮马桥']
-# sum distance 19.316
-# sum lines 3
-# ['霍营', '立水桥', '立水桥南', '北苑路北', '大屯路东', '惠新西街北口', '惠新西街南口', '芍药居', '太阳宫', '三元桥', '亮马桥']
-# sum distance 25.308
-# sum lines 3
-# ['霍营', '育新', '西小口', '永泰庄', '林萃桥', '森林公园南门', '奥林匹克公园', '奥体中心', '北土城', '安华桥', '安德里北街', '鼓楼大街', '安定门', '雍和宫', '东直门', '三元桥', '亮马桥']
-# sum distance 19.316
-# sum lines 3
-# ['霍营', '立水桥', '立水桥南', '北苑路北', '大屯路东', '惠新西街北口', '惠新西街南口', '芍药居', '太阳宫', '三元桥', '亮马桥']
