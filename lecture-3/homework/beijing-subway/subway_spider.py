@@ -8,16 +8,30 @@ class BJSubwaySpider():
     def __init__(self, url):
         self.url = url
 
-    def get_html(self, url):
+    def get_html(self, url, encoding):
         session = requests.Session()
         session.headers['User-Agent'] = SESSIONS_HEADER
         html = session.get(url)
-        html.encoding = 'utf-8'
+        html.encoding = encoding
         return html.text
+
+    def get_all_station(self, lines):
+        pass
+
+    def process(self):
+        pass
+
+
+class SpiderBaidu(BJSubwaySpider):
+    def __init__(self, url):
+        BJSubwaySpider.__init__(self, url)
+
+    def get_html(self, url):
+        return BJSubwaySpider.get_html(self, url, 'utf-8')
 
     def get_subway_lines(self, html):
         lines = {}
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         contents = soup.find_all('a', {"target": "_blank"})
         for content in contents:
             ret = re.search("a href=\"(.*)\" target=\"_blank\">(北京地铁.*线)<\/a>", str(content))
@@ -28,7 +42,7 @@ class BJSubwaySpider():
 
     def get_station_distances(self, html):
         distances = []
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, "html.parser")
         contents = soup.find_all('table')
         target_content = ''
         for content in contents:
@@ -46,6 +60,7 @@ class BJSubwaySpider():
         else:
             return None
 
+    # all_lines = {line:[("sta-sta",dis)...]}
     def get_all_station(self, lines):
         all_lines = {}
         for line, link in lines.items():
@@ -66,3 +81,32 @@ class BJSubwaySpider():
 # base_url = 'https://baike.baidu.com/item/%E5%8C%97%E4%BA%AC%E5%9C%B0%E9%93%81/408485#2_1'
 # spider = BJSubwaySpider(base_url)
 # print(spider.process())
+
+
+class SpiderOffice(BJSubwaySpider):
+    def __init__(self, url):
+        BJSubwaySpider.__init__(self, url)
+
+    def get_html(self, url):
+        return BJSubwaySpider.get_html(self, url, 'gbk')
+
+    def get_all_station(self, lines):
+        all_lines = {}
+        html = lines
+        soup = BeautifulSoup(html, "html.parser")
+        contents = soup.find_all('div', {"class": "con_text"})
+        for content in contents:
+            ret = re.findall(">(.*)相邻站间距信息统计表<.|\n*([\u4e00-\u9fff|\w]*——[\u4e00-\u9fff|\w]*).*\n.*?(\d+)<\/td>",
+                             str(content))
+            if ret:
+                stations = []
+                for i in range(1, len(ret)):
+                    stations.append((ret[i][1], ret[i][2]))
+                all_lines[ret[0][0]] = stations
+
+        return all_lines
+
+    def process(self):
+        html = self.get_html(self.url)
+        return self.get_all_station(html)
+
