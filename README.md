@@ -13,3 +13,4 @@ Homework status
 | --------- | ------------------------------------------------------ |
 | Lecture-1 | Coding finished                                        |
 | Lecture-2 | Coding finished, see lecture-2/homework/homework.ipynb |
+| Lecture-3 | Finished, see lecture-3/homework/homework.ipynb        |
