@@ -9,3 +9,4 @@ WikiExtractor.py
 venv
 extracted
 __pycache__
+dist
