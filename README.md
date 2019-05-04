@@ -9,8 +9,11 @@ Practice and homework of my NLP lecture
 
 Homework status
 
-| homework  | Status                                                 |
-| --------- | ------------------------------------------------------ |
-| Lecture-1 | Coding finished                                        |
-| Lecture-2 | Coding finished, see lecture-2/homework/homework.ipynb |
-| Lecture-3 | Finished, see lecture-3/homework/homework.ipynb        |
+| homework  | Status             |
+| --------- | ------------------ |
+| Lecture-1 | Finished           |
+| Lecture-2 | Finished           |
+| Lecture-3 | Finished           |
+| Lecture-4 | Finished           |
+| Lecture-5 | Project-1, working |
+| Lecture-6 | Finished           |
