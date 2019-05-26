@@ -10,3 +10,4 @@ venv
 extracted
 __pycache__
 dist
+vector*
