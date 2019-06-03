@@ -17,5 +17,5 @@ Homework status
 | Lecture-4 | Finished                                                    |
 | Lecture-5 | Project-1, working                                          |
 | Lecture-6 | Finished                                                    |
-| Lecture-8 | Finished, 2 dimension x, 49% accuracy                       |
+| Lecture-8 | Finished, 			                          |
 |           |                                                             |
